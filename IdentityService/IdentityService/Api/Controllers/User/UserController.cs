@@ -30,6 +30,22 @@ public class UserController(IUserLogicManager userLogicManager) : ControllerBase
             Roles = user.Roles.Select(role => role.Id).ToList()
         }).ToList());
     }
+    [HttpGet("search")]
+    [ProducesResponseType<List<UserResponse>>(200)]
+    public async Task<ActionResult> SearchUsers([FromQuery] string query)
+    {
+        var result = await userLogicManager.SearchUsers(query);
+        return Ok(result.Select(user => new UserResponse
+        {
+            Id = user.Id,
+            Name = user.Name,
+            Username = user.Username,
+            PhoneNumber = user.PhoneNumber,
+            Email = user.Email,
+            ProfilePicture = user.ProfilePicture,
+            Roles = user.Roles.Select(role => role.Id).ToList()
+        }).ToList());
+    }
     
     
     [HttpPost]

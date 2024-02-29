@@ -44,4 +44,11 @@ public interface IUserRepository
     /// </summary>
     /// <param name="userId">Идентификатор пользователя</param>
     Task DeleteUser(Guid userId);
+    
+    /// <summary>
+    /// Поиск пользователей
+    /// </summary>
+    /// <param name="query">Строка запроса</param>
+    /// <returns>Список пользователей</returns>
+    Task<List<UserDal>> SearchUsers(string query);
 }

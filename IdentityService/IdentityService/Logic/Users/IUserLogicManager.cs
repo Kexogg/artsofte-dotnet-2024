@@ -40,4 +40,11 @@ public interface IUserLogicManager
     /// </summary>
     /// <param name="userId">GUID пользователя</param>
     Task DeleteUser(Guid userId);
+
+    /// <summary>
+    /// Поиск пользователей
+    /// </summary>
+    /// <param name="query">Строка запроса</param>
+    /// <returns>Список пользователей</returns>
+    Task<List<UserDal>> SearchUsers(string query);
 }

@@ -68,4 +68,14 @@ public class UserLogicManager(IUserRepository userRepository, IRoleRepository ro
     {
         await userRepository.DeleteUser(userId);
     }
+    
+    /// <inheritdoc />
+    public async Task<List<UserDal>> SearchUsers(string query)
+    {
+        if (string.IsNullOrEmpty(query))
+        {
+            throw new Exception("Пустой запрос");
+        }
+        return await userRepository.SearchUsers(query);
+    }
 }

@@ -57,4 +57,10 @@ public class UserRepository : IUserRepository
 
         throw new Exception();
     }
+    
+    /// <inheritdoc />
+    public Task<List<UserDal>> SearchUsers(string query)
+    {
+        return Task.FromResult(Store.Values.Where(x => x.Name.Contains(query)).ToList());
+    }
 }
