@@ -1,10 +1,10 @@
-using Dal.Users.Models;
+using Dal.Users;
 using Logic.Users.Models;
 
 namespace Logic.Users;
 
 /// <summary>
-/// Работа с пользователем
+/// Логика работы с пользователями
 /// </summary>
 public interface IUserLogicManager
 {
@@ -18,6 +18,8 @@ public interface IUserLogicManager
     /// <summary>
     /// Получить пользователя по Guid
     /// </summary>
+    /// <param name="userId">GUID пользователя</param>
+    /// <returns>Пользователь</returns>
     Task<UserDal> GetUser(Guid userId);
 
     /// <summary>
@@ -30,6 +32,7 @@ public interface IUserLogicManager
     /// Обновить пользователя
     /// </summary>
     /// <param name="user">Пользователь</param>
+    /// <returns>Обновленный пользователь</returns>
     Task<UserDal> UpdateUser(UserModel user);
     
     /// <summary>

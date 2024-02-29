@@ -1,4 +1,4 @@
-namespace Core.Dal.Entities;
+namespace Core;
 
 /// <summary>
 /// Перечисление прав доступа

@@ -1,11 +1,25 @@
+using Core;
 using Core.Dal.Base;
-using Core.Dal.Entities;
 
 namespace Dal.Roles;
 
+/// <summary>
+/// Модель роли
+/// </summary>
 public record RoleDal : BaseEntity<Guid>
 {
-    public required string Name { get; set; }
-    public required string Description { get; set; }
-    public ICollection<PermissionsEnum> Permissions { get; set; }
+    /// <summary>
+    /// Имя роли
+    /// </summary>
+    public required string Name { get; init; }
+
+    /// <summary>
+    /// Описание роли
+    /// </summary>
+    public required string Description { get; init; }
+
+    /// <summary>
+    /// Права роли
+    /// </summary>
+    public required ICollection<PermissionsEnum> Permissions { get; init; }
 }

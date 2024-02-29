@@ -1,4 +1,4 @@
-using Core.Dal.Entities;
+using Core;
 
 namespace Api.Controllers.Role.Responses;
 

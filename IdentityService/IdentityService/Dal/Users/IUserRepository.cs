@@ -1,5 +1,3 @@
-using Dal.Users.Models;
-
 namespace Dal.Users;
 
 /// <summary>
