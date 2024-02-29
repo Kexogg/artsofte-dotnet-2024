@@ -1,0 +1,11 @@
+/home/kexogg/RiderProjects/artsofte-dotnet-2024/Core/Core/bin/Debug/net8.0/Core.deps.json
+/home/kexogg/RiderProjects/artsofte-dotnet-2024/Core/Core/bin/Debug/net8.0/Core.dll
+/home/kexogg/RiderProjects/artsofte-dotnet-2024/Core/Core/bin/Debug/net8.0/Core.pdb
+/home/kexogg/RiderProjects/artsofte-dotnet-2024/Core/Core/obj/Debug/net8.0/Core.GeneratedMSBuildEditorConfig.editorconfig
+/home/kexogg/RiderProjects/artsofte-dotnet-2024/Core/Core/obj/Debug/net8.0/Core.AssemblyInfoInputs.cache
+/home/kexogg/RiderProjects/artsofte-dotnet-2024/Core/Core/obj/Debug/net8.0/Core.AssemblyInfo.cs
+/home/kexogg/RiderProjects/artsofte-dotnet-2024/Core/Core/obj/Debug/net8.0/Core.csproj.CoreCompileInputs.cache
+/home/kexogg/RiderProjects/artsofte-dotnet-2024/Core/Core/obj/Debug/net8.0/Core.dll
+/home/kexogg/RiderProjects/artsofte-dotnet-2024/Core/Core/obj/Debug/net8.0/refint/Core.dll
+/home/kexogg/RiderProjects/artsofte-dotnet-2024/Core/Core/obj/Debug/net8.0/Core.pdb
+/home/kexogg/RiderProjects/artsofte-dotnet-2024/Core/Core/obj/Debug/net8.0/ref/Core.dll
