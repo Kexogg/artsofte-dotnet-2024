@@ -7,13 +7,21 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers.Role;
 
 [Route("api/roles")]
-public class RoleController(IRoleLogicManager roleLogicManager) : ControllerBase
+public class RoleController : ControllerBase
 {
+    private readonly IRoleLogicManager _roleLogicManager;
+
+    // ReSharper disable once ConvertToPrimaryConstructor
+    public RoleController(IRoleLogicManager userLogicManager)
+    {
+        _roleLogicManager = userLogicManager;
+    }
+
     [HttpGet]
     [ProducesResponseType<List<RoleInfoResponse>>(200)]
     public async Task<IActionResult> GetRoles()
     {
-        var roles = await roleLogicManager.GetRoles();
+        var roles = await _roleLogicManager.GetRoles();
         return Ok(roles.Select(x => new RoleInfoResponse
         {
             Id = x.Id,
@@ -22,12 +30,12 @@ public class RoleController(IRoleLogicManager roleLogicManager) : ControllerBase
             Permissions = x.Permissions
         }).ToList());
     }
-    
+
     [HttpGet("{roleId:guid}")]
     [ProducesResponseType<RoleInfoResponse>(200)]
     public async Task<IActionResult> GetRole(Guid roleId)
     {
-        var role = await roleLogicManager.GetRole(roleId);
+        var role = await _roleLogicManager.GetRole(roleId);
         return Ok(new RoleInfoResponse
         {
             Id = role.Id,
@@ -36,7 +44,7 @@ public class RoleController(IRoleLogicManager roleLogicManager) : ControllerBase
             Permissions = role.Permissions
         });
     }
-    
+
     [HttpPost]
     [ProducesResponseType<RoleCreateResponse>(200)]
     public async Task<IActionResult> CreateRole([FromBody] RoleCreateRequest request)
@@ -47,12 +55,13 @@ public class RoleController(IRoleLogicManager roleLogicManager) : ControllerBase
             Description = request.Description,
             Permissions = request.Permissions
         };
-        var roleId = await roleLogicManager.CreateRole(role);
+        var roleId = await _roleLogicManager.CreateRole(role);
         return Ok(new RoleCreateResponse
         {
             Id = roleId
         });
     }
+
     [HttpPut("{roleId:guid}")]
     [ProducesResponseType<RoleInfoResponse>(200)]
     public async Task<IActionResult> UpdateRole([FromBody] RoleCreateRequest request, Guid roleId)
@@ -64,7 +73,7 @@ public class RoleController(IRoleLogicManager roleLogicManager) : ControllerBase
             Description = request.Description,
             Permissions = request.Permissions
         };
-        await roleLogicManager.UpdateRole(role);
+        await _roleLogicManager.UpdateRole(role);
         return Ok(new RoleInfoResponse
         {
             Id = role.Id,
@@ -73,10 +82,11 @@ public class RoleController(IRoleLogicManager roleLogicManager) : ControllerBase
             Permissions = role.Permissions
         });
     }
+
     [HttpDelete("{roleId:guid}")]
     public async Task<IActionResult> DeleteRole(Guid roleId)
     {
-        await roleLogicManager.DeleteRole(roleId);
+        await _roleLogicManager.DeleteRole(roleId);
         return Ok();
     }
 }

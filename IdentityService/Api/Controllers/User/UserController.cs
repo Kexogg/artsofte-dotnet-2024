@@ -10,15 +10,22 @@ namespace Api.Controllers.User;
 /// <summary>
 /// Контроллер для работы с пользователями
 /// </summary>
-
 [Route("api/users")]
-public class UserController(IUserLogicManager userLogicManager) : ControllerBase
+public class UserController : ControllerBase
 {
+    private readonly IUserLogicManager _userLogicManager;
+
+    // ReSharper disable once ConvertToPrimaryConstructor
+    public UserController(IUserLogicManager userLogicManager)
+    {
+        _userLogicManager = userLogicManager;
+    }
+
     [HttpGet]
     [ProducesResponseType<List<UserResponse>>(200)]
     public async Task<ActionResult> GetUsers()
     {
-        var result = await userLogicManager.GetUsers();
+        var result = await _userLogicManager.GetUsers();
         return Ok(result.Select(user => new UserResponse
         {
             Id = user.Id,
@@ -30,11 +37,12 @@ public class UserController(IUserLogicManager userLogicManager) : ControllerBase
             Roles = user.Roles.Select(role => role.Id).ToList()
         }).ToList());
     }
+
     [HttpGet("search")]
     [ProducesResponseType<List<UserResponse>>(200)]
     public async Task<ActionResult> SearchUsers([FromQuery] string query)
     {
-        var result = await userLogicManager.SearchUsers(query);
+        var result = await _userLogicManager.SearchUsers(query);
         return Ok(result.Select(user => new UserResponse
         {
             Id = user.Id,
@@ -46,13 +54,13 @@ public class UserController(IUserLogicManager userLogicManager) : ControllerBase
             Roles = user.Roles.Select(role => role.Id).ToList()
         }).ToList());
     }
-    
-    
+
+
     [HttpPost]
     [ProducesResponseType<CreateUserResponse>(200)]
     public async Task<ActionResult> CreateUser([FromBody] CreateUserRequest dto)
     {
-        var result = await userLogicManager.CreateUser(new CreateUserModel
+        var result = await _userLogicManager.CreateUser(new CreateUserModel
         {
             Name = dto.Name,
             Username = dto.Username,
@@ -62,18 +70,18 @@ public class UserController(IUserLogicManager userLogicManager) : ControllerBase
             ProfilePicture = dto.ProfilePicture,
             Roles = dto.Roles
         });
-        
+
         return Ok(new CreateUserResponse
         {
             Id = result
         });
     }
-    
+
     [HttpPut("{userId:guid}")]
     [ProducesResponseType<UserResponse>(200)]
     public async Task<ActionResult> UpdateUser([FromBody] UpdateUserRequest dto, Guid userId)
     {
-        var result = await userLogicManager.UpdateUser(new UserModel
+        var result = await _userLogicManager.UpdateUser(new UserModel
         {
             Id = userId,
             Name = dto.Name,
@@ -84,7 +92,7 @@ public class UserController(IUserLogicManager userLogicManager) : ControllerBase
             ProfilePicture = dto.ProfilePicture,
             Roles = dto.Roles
         });
-        
+
         return Ok(new UserResponse
         {
             Id = result.Id,
@@ -96,12 +104,12 @@ public class UserController(IUserLogicManager userLogicManager) : ControllerBase
             Roles = result.Roles.Select(role => role.Id).ToList()
         });
     }
-    
+
     [HttpGet("{userId:guid}")]
     [ProducesResponseType<UserResponse>(200)]
     public async Task<ActionResult> GetUser(Guid userId)
     {
-        var result = await userLogicManager.GetUser(userId);
+        var result = await _userLogicManager.GetUser(userId);
         return Ok(new UserResponseDetalied
         {
             Id = result.Id,
@@ -110,7 +118,7 @@ public class UserController(IUserLogicManager userLogicManager) : ControllerBase
             PhoneNumber = result.PhoneNumber,
             Email = result.Email,
             ProfilePicture = result.ProfilePicture,
-            Roles = result.Roles.Select(role => 
+            Roles = result.Roles.Select(role =>
                 new RoleInfoResponse
                 {
                     Id = role.Id,
@@ -120,13 +128,12 @@ public class UserController(IUserLogicManager userLogicManager) : ControllerBase
                 }).ToList()
         });
     }
-    
+
     [HttpDelete("{userId:guid}")]
     [ProducesResponseType(200)]
     public async Task<ActionResult> DeleteUser(Guid userId)
     {
-        await userLogicManager.DeleteUser(userId);
+        await _userLogicManager.DeleteUser(userId);
         return Ok();
     }
-    
 }
