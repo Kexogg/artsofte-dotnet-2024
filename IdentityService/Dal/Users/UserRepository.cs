@@ -8,59 +8,59 @@ public class UserRepository : IUserRepository
     private static readonly ConcurrentDictionary<Guid, UserDal> Store = new();
 
     /// <inheritdoc />
-    public Task<List<UserDal>> GetUsers()
+    public async Task<List<UserDal>> GetUsers()
     {
-        return Task.FromResult(Store.Values.ToList());
+        return await Task.FromResult(Store.Values.ToList());
     }
 
     /// <inheritdoc />
-    public Task<UserDal?> GetUser(Guid userId)
+    public async Task<UserDal?> GetUserAsync(Guid userId)
     {
-        return Task.FromResult(Store.Values.FirstOrDefault(x => x.Id == userId));
+        if (Store.TryGetValue(userId, out var user))
+        {
+            return await Task.FromResult(user);
+        }
+
+        throw new Exception();
     }
 
     /// <inheritdoc />
-    public Task<UserDal?> GetUser(string login)
+    public async Task<UserDal?> GetUserAsync(string login)
     {
-        return Task.FromResult(Store.Values.FirstOrDefault(x => x.Username == login));
+        return await Task.FromResult(Store.Values.FirstOrDefault(x => x.Username == login));
     }
 
     /// <inheritdoc />
-    public Task<Guid> CreateUser(UserDal user)
+    public async Task<Guid> CreateUserAsync(UserDal user)
     {
         if (Store.TryAdd(user.Id, user))
         {
-            return Task.FromResult(user.Id);
+            return await Task.FromResult(user.Id);
         }
 
         throw new Exception();
     }
 
     /// <inheritdoc />
-    public Task<UserDal> UpdateUser(UserDal user)
+    public async Task<UserDal> UpdateUserAsync(UserDal user)
     {
         if (Store.TryUpdate(user.Id, user, Store[user.Id]))
         {
-            return Task.FromResult(user);
+            return await Task.FromResult(user);
         }
 
         throw new Exception();
     }
 
     /// <inheritdoc />
-    public Task DeleteUser(Guid userId)
+    public async Task DeleteUserAsync(Guid userId)
     {
-        if (Store.TryRemove(userId, out _))
-        {
-            return Task.CompletedTask;
-        }
-
-        throw new Exception();
+        if (!Store.TryRemove(userId, out _)) throw new Exception();
     }
     
     /// <inheritdoc />
-    public Task<List<UserDal>> SearchUsers(string query)
+    public async Task<UserDal[]> SearchUsersAsync(string query)
     {
-        return Task.FromResult(Store.Values.Where(x => x.Name.Contains(query)).ToList());
+        return await Task.FromResult(Store.Values.Where(x => x.Name.Contains(query)).ToArray());
     }
 }

@@ -5,6 +5,7 @@ namespace Core;
 /// </summary>
 public enum PermissionsEnum
 {
+    None,
     CreateUsers,
     ReadUsers,
     UpdateUsers,

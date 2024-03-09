@@ -21,7 +21,7 @@ public class RoleController : ControllerBase
     [ProducesResponseType<List<RoleInfoResponse>>(200)]
     public async Task<IActionResult> GetRoles()
     {
-        var roles = await _roleLogicManager.GetRoles();
+        var roles = await _roleLogicManager.GetRolesAsync();
         return Ok(roles.Select(x => new RoleInfoResponse
         {
             Id = x.Id,
@@ -33,9 +33,9 @@ public class RoleController : ControllerBase
 
     [HttpGet("{roleId:guid}")]
     [ProducesResponseType<RoleInfoResponse>(200)]
-    public async Task<IActionResult> GetRole(Guid roleId)
+    public async Task<IActionResult> GetRole([FromRoute] Guid roleId)
     {
-        var role = await _roleLogicManager.GetRole(roleId);
+        var role = await _roleLogicManager.GetRoleAsync(roleId);
         return Ok(new RoleInfoResponse
         {
             Id = role.Id,
@@ -55,7 +55,7 @@ public class RoleController : ControllerBase
             Description = request.Description,
             Permissions = request.Permissions
         };
-        var roleId = await _roleLogicManager.CreateRole(role);
+        var roleId = await _roleLogicManager.CreateRoleAsync(role);
         return Ok(new RoleCreateResponse
         {
             Id = roleId
@@ -73,7 +73,7 @@ public class RoleController : ControllerBase
             Description = request.Description,
             Permissions = request.Permissions
         };
-        await _roleLogicManager.UpdateRole(role);
+        await _roleLogicManager.UpdateRoleAsync(role);
         return Ok(new RoleInfoResponse
         {
             Id = role.Id,
@@ -84,9 +84,9 @@ public class RoleController : ControllerBase
     }
 
     [HttpDelete("{roleId:guid}")]
-    public async Task<IActionResult> DeleteRole(Guid roleId)
+    public async Task<IActionResult> DeleteRole([FromRoute] Guid roleId)
     {
-        await _roleLogicManager.DeleteRole(roleId);
+        await _roleLogicManager.DeleteRoleAsync(roleId);
         return Ok();
     }
 }

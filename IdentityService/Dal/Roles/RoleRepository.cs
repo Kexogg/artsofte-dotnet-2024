@@ -8,49 +8,42 @@ public class RoleRepository : IRoleRepository
     private static readonly ConcurrentDictionary<Guid, RoleDal> Store = new();
     
     /// <inheritdoc />
-    public Task<RoleDal> GetRole(Guid roleId)
+    public async Task<RoleDal> GetRoleAsync(Guid roleId)
     {
-        var role = Store.Values.FirstOrDefault(x => x.Id == roleId);
-        if (role != null)
+        if (Store.TryGetValue(roleId, out var role))
         {
-            return Task.FromResult(role);
+            return await Task.FromResult(role);
         }
         throw new Exception();
     }
 
     /// <inheritdoc />
-    public Task<Guid> CreateRole(RoleDal role)
+    public async Task<Guid> CreateRoleAsync(RoleDal role)
     {
         if (Store.TryAdd(role.Id, role))
         {
-            return Task.FromResult(role.Id);
+            return await Task.FromResult(role.Id);
         }
         throw new Exception();
     }
 
     /// <inheritdoc />
-    public Task<RoleDal> UpdateRole(RoleDal role)
+    public async Task<RoleDal> UpdateRoleAsync(RoleDal role)
     {
-        if (Store.TryGetValue(role.Id, out var existingRole))
-        {
-            Store.TryUpdate(role.Id, role, existingRole);
-        }
-        throw new Exception();
+        if (!Store.TryGetValue(role.Id, out var existingRole)) throw new Exception();
+        Store.TryUpdate(role.Id, role, existingRole);
+        return await Task.FromResult(role);
     }
     
     /// <inheritdoc />
-    public Task DeleteRole(Guid roleId)
+    public async Task DeleteRoleAsync(Guid roleId)
     {
-        if (Store.TryRemove(roleId, out _))
-        {
-            return Task.CompletedTask;
-        }
-        throw new Exception();
+        if (!Store.TryRemove(roleId, out _)) throw new Exception();
     }
     
     /// <inheritdoc />
-    public Task<List<RoleDal>> GetRoles()
+    public async Task<RoleDal[]> GetRolesAsync()
     {
-        return Task.FromResult(Store.Values.ToList());
+        return await Task.FromResult(Store.Values.ToArray());
     }
 }

@@ -7,19 +7,19 @@ namespace Logic.Roles;
 public class RoleLogicManager(IRoleRepository roleRepository) : IRoleLogicManager
 {
     /// <inheritdoc />
-    public async Task<List<RoleDal>> GetRoles()
+    public async Task<RoleDal[]> GetRolesAsync()
     {
-        return await roleRepository.GetRoles();
+        return await roleRepository.GetRolesAsync();
     }
 
     /// <inheritdoc />
-    public async Task<RoleDal> GetRole(Guid roleId)
+    public async Task<RoleDal> GetRoleAsync(Guid roleId)
     {
-        return await roleRepository.GetRole(roleId);
+        return await roleRepository.GetRoleAsync(roleId);
     }
 
     /// <inheritdoc />
-    public async Task<Guid> CreateRole(RoleCreateLogicModel logic)
+    public async Task<Guid> CreateRoleAsync(RoleCreateLogicModel logic)
     {
         var newRole = new RoleDal
         {
@@ -29,11 +29,11 @@ public class RoleLogicManager(IRoleRepository roleRepository) : IRoleLogicManage
             Permissions = logic.Permissions
         };
 
-        return await roleRepository.CreateRole(newRole);
+        return await roleRepository.CreateRoleAsync(newRole);
     }
 
     /// <inheritdoc />
-    public async Task<RoleDal> UpdateRole(RoleUpdateLogicModel logic)
+    public async Task<RoleDal> UpdateRoleAsync(RoleUpdateLogicModel logic)
     {
         var newRole = new RoleDal
         {
@@ -42,12 +42,12 @@ public class RoleLogicManager(IRoleRepository roleRepository) : IRoleLogicManage
             Description = logic.Description,
             Permissions = logic.Permissions
         };
-        return await roleRepository.UpdateRole(newRole);
+        return await roleRepository.UpdateRoleAsync(newRole);
     }
 
     /// <inheritdoc />
-    public async Task DeleteRole(Guid roleId)
+    public async Task DeleteRoleAsync(Guid roleId)
     {
-        await roleRepository.DeleteRole(roleId);
+        await roleRepository.DeleteRoleAsync(roleId);
     }
 }

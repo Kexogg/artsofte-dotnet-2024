@@ -25,7 +25,7 @@ public class UserController : ControllerBase
     [ProducesResponseType<List<UserResponse>>(200)]
     public async Task<ActionResult> GetUsers()
     {
-        var result = await _userLogicManager.GetUsers();
+        var result = await _userLogicManager.GetUsersAsync();
         return Ok(result.Select(user => new UserResponse
         {
             Id = user.Id,
@@ -42,7 +42,7 @@ public class UserController : ControllerBase
     [ProducesResponseType<List<UserResponse>>(200)]
     public async Task<ActionResult> SearchUsers([FromQuery] string query)
     {
-        var result = await _userLogicManager.SearchUsers(query);
+        var result = await _userLogicManager.SearchUsersAsync(query);
         return Ok(result.Select(user => new UserResponse
         {
             Id = user.Id,
@@ -60,7 +60,7 @@ public class UserController : ControllerBase
     [ProducesResponseType<CreateUserResponse>(200)]
     public async Task<ActionResult> CreateUser([FromBody] CreateUserRequest dto)
     {
-        var result = await _userLogicManager.CreateUser(new CreateUserModel
+        var result = await _userLogicManager.CreateUserAsync(new CreateUserModel
         {
             Name = dto.Name,
             Username = dto.Username,
@@ -81,7 +81,7 @@ public class UserController : ControllerBase
     [ProducesResponseType<UserResponse>(200)]
     public async Task<ActionResult> UpdateUser([FromBody] UpdateUserRequest dto, Guid userId)
     {
-        var result = await _userLogicManager.UpdateUser(new UserModel
+        var result = await _userLogicManager.UpdateUserAsync(new UserModel
         {
             Id = userId,
             Name = dto.Name,
@@ -109,7 +109,7 @@ public class UserController : ControllerBase
     [ProducesResponseType<UserResponse>(200)]
     public async Task<ActionResult> GetUser(Guid userId)
     {
-        var result = await _userLogicManager.GetUser(userId);
+        var result = await _userLogicManager.GetUserAsync(userId);
         return Ok(new UserResponseDetalied
         {
             Id = result.Id,
@@ -133,7 +133,7 @@ public class UserController : ControllerBase
     [ProducesResponseType(200)]
     public async Task<ActionResult> DeleteUser(Guid userId)
     {
-        await _userLogicManager.DeleteUser(userId);
+        await _userLogicManager.DeleteUserAsync(userId);
         return Ok();
     }
 }

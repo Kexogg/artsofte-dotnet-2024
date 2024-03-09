@@ -16,14 +16,14 @@ public interface IUserRepository
     /// </summary>
     /// <param name="userId">Идентификатор пользователя</param>
     /// <returns>Пользователь</returns>
-    Task<UserDal?> GetUser(Guid userId);
+    Task<UserDal?> GetUserAsync(Guid userId);
 
     /// <summary>
     /// Получить пользователя по логину
     /// </summary>
     /// <param name="login">Логин пользователя</param>
     /// <returns>Пользователь</returns>
-    Task<UserDal?> GetUser(string login);
+    Task<UserDal?> GetUserAsync(string login);
 
 
     /// <summary>
@@ -31,24 +31,24 @@ public interface IUserRepository
     /// </summary>
     /// <param name="user">Пользователь</param>
     /// <returns>Идентификатор пользователя</returns>
-    Task<Guid> CreateUser(UserDal user);
+    Task<Guid> CreateUserAsync(UserDal user);
 
     /// <summary>
     /// Обновить пользователя
     /// </summary>
     /// <param name="user">Пользователь</param>
-    Task<UserDal> UpdateUser(UserDal user);
+    Task<UserDal> UpdateUserAsync(UserDal user);
 
     /// <summary>
     /// Удалить пользователя
     /// </summary>
     /// <param name="userId">Идентификатор пользователя</param>
-    Task DeleteUser(Guid userId);
+    Task DeleteUserAsync(Guid userId);
     
     /// <summary>
     /// Поиск пользователей
     /// </summary>
     /// <param name="query">Строка запроса</param>
     /// <returns>Список пользователей</returns>
-    Task<List<UserDal>> SearchUsers(string query);
+    Task<UserDal[]> SearchUsersAsync(string query);
 }

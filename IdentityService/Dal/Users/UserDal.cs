@@ -23,7 +23,7 @@ public record UserDal : BaseEntity<Guid>
     /// <summary>
     /// Номер телефона пользователя
     /// </summary>
-    public required string PhoneNumber { get; init; }
+    public required string? PhoneNumber { get; init; }
     /// <summary>
     /// Почта пользователя
     /// </summary>
