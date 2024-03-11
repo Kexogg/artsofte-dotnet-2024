@@ -6,5 +6,5 @@ namespace Core.Dal.Base;
 /// <typeparam name="T">Тип идентификатора</typeparam>
 public record BaseEntity<T>
 {
-    public required T Id { get; init; }
+    public T? Id { get; set; }
 }
