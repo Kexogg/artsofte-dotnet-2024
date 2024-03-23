@@ -8,7 +8,7 @@ public interface ICoursesService
     
     Task<Course[]> GetCoursesAsync();
     
-    Task<Course?> GetCourseByIdAsync(Guid id);
+    Task<CourseWithParticipants?> GetCourseByIdAsync(Guid id);
     
     Task<Course> UpdateCourseAsync(Course course);
     

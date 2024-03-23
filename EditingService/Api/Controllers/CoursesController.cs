@@ -39,7 +39,8 @@ public class CoursesController : ControllerBase
         var response = await _coursesService.CreateCourseAsync(new Course
         {
             Name = request.Name,
-            Description = request.Description
+            Description = request.Description,
+            Participants = request.Participants
         });
         return Ok(response);
     }
