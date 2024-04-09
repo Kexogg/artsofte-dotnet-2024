@@ -1,5 +1,7 @@
+using System.Security.Principal;
 using Core.HttpLogic.Services;
 using Core.HttpLogic.Services.Interfaces;
+using DataExchange.Identity;
 using Domain.Entities;
 using Domain.Interfaces;
 using Services.Interfaces;
@@ -11,13 +13,16 @@ public class CoursesService : ICoursesService
     private readonly ICoursesRepository _coursesRepository;
     private readonly IEventsRepository _eventsRepository;
     private readonly IHttpRequestService _httpClient;
+    private readonly IIdentityDataService _identityDataService;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public CoursesService(ICoursesRepository coursesRepository, IEventsRepository eventsRepository, IHttpRequestService httpClient)
+    public CoursesService(ICoursesRepository coursesRepository, IEventsRepository eventsRepository,
+        IHttpRequestService httpClient, IIdentityDataService identityDataService)
     {
         _coursesRepository = coursesRepository;
         _eventsRepository = eventsRepository;
         _httpClient = httpClient;
+        _identityDataService = identityDataService;
     }
 
     public async Task<Guid> CreateCourseAsync(Course course)
@@ -43,11 +48,6 @@ public class CoursesService : ICoursesService
             return null;
         }
 
-        var httpRequestData = new HttpRequestData()
-        {
-            Method = HttpMethod.Get
-        };
-        
         var courseWithParticipants = new CourseWithParticipants
         {
             Id = course.Id,
@@ -56,22 +56,21 @@ public class CoursesService : ICoursesService
             Events = course.Events,
             Participants = new Participant[(course.Participants ?? []).Length]
         };
-        
+
         if (course.Participants == null)
         {
             return courseWithParticipants;
         }
-        
+
         for (var index = 0; index < course.Participants.Length; index++)
         {
             var participantId = course.Participants[index];
-            httpRequestData.Uri = new Uri($"http://localhost:5212/api/users/{participantId}");
-            var response = await _httpClient.SendRequestAsync<Participant>(httpRequestData);
-            if (response == null)
+            var user = await _identityDataService.GetUserByIdAsync(participantId, "chat");
+            courseWithParticipants.Participants[index] = new Participant
             {
-                throw new InvalidOperationException();
-            }
-            courseWithParticipants.Participants[index] = response.Body;
+                Id = participantId,
+                Name = user.Name,
+            };
         }
 
         return courseWithParticipants;
