@@ -1,4 +1,3 @@
-using Core.HttpLogic.Services.Interfaces;
 using Core.RabbitLogic.Services;
 using DataExchange.Identity.Models;
 using Microsoft.Extensions.Configuration;
