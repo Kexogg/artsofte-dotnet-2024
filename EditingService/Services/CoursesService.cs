@@ -65,7 +65,7 @@ public class CoursesService : ICoursesService
         for (var index = 0; index < course.Participants.Length; index++)
         {
             var participantId = course.Participants[index];
-            var user = await _identityDataService.GetUserByIdAsync(participantId, "chat");
+            var user = await _identityDataService.GetUserByIdAsync(participantId, "id");
             courseWithParticipants.Participants[index] = new Participant
             {
                 Id = participantId,
