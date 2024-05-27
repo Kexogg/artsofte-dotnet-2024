@@ -1,6 +1,8 @@
 using Core.HttpLogic;
 using Core.Logs;
+using Core.RabbitLogic;
 using Core.TraceIdLogic;
+using DataExchange.Identity;
 using Infrastructure;
 using Services;
 using Serilog;
@@ -8,7 +10,7 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Host.UseSerilog((hostingContext, loggerConfig) =>
+builder.Host.UseSerilog((_, loggerConfig) =>
 {
     loggerConfig.GetConfiguration();
 });
@@ -24,6 +26,8 @@ builder.Services.AddServices();
 builder.Services.AddInfrastructure();
 builder.Services.AddHttpRequestService();
 builder.Services.TryAddTraceId();
+builder.Services.AddRabbitServices();
+builder.Services.AddScoped<IIdentityDataService, IIdentityDataService>();
 
 var app = builder.Build();
 

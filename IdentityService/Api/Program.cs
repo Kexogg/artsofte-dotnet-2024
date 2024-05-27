@@ -1,5 +1,7 @@
+using Core.RabbitLogic;
 using Dal;
 using Logic;
+using Logic.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
-
+builder.Services.AddRabbitServices();
+builder.Services.AddHostedService<RabbitClientService>();
 builder.Services.TryAddLogic();
 builder.Services.TryAddDal();
 
