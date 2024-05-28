@@ -3,7 +3,7 @@ public readonly struct TimeOut : IEquatable<TimeOut>, IComparable<TimeOut>
 {
     private readonly int _inMilliseconds;
 
-    public TimeOut(TimeSpan? timeout, string paramName = "timeout")
+    private TimeOut(TimeSpan? timeout, string paramName = "timeout")
     {
         if (timeout is { } timeoutValue)
         {

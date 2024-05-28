@@ -11,40 +11,35 @@ internal static class ZooKeeperSequentialPath
         org.apache.zookeeper.ZooKeeper zooKeeper,
         string? alternatePrefix = null)
     {
-        var ephemeralChildrenWithPrefix = GetEphemeralChildrenWithPrefix(childrenNames, parentNode, prefix, alternatePrefix);
+        var ephemeralChildrenWithPrefix =
+            GetEphemeralChildrenWithPrefix(childrenNames, parentNode, prefix, alternatePrefix);
 
         if (ephemeralChildrenWithPrefix.Count == 0)
-        {
             return [];
-        }
 
         ephemeralChildrenWithPrefix.Sort((a, b) => a.UnsignedSequenceNumber.CompareTo(b.UnsignedSequenceNumber));
 
         var (maxGap, maxGapEndIndex) = FindMaxGap(ephemeralChildrenWithPrefix);
 
         if (maxGap >= 4_000_000_000u)
-        {
             return ReorderByLowestIndex(ephemeralChildrenWithPrefix, maxGapEndIndex);
-        }
 
         var creationTimeTasksByChildPath =
             ephemeralChildrenWithPrefix.ToDictionary(t => t.Path, t => GetNodeCreationTimeAsync(t.Path, zooKeeper));
         await Task.WhenAll(creationTimeTasksByChildPath.Values).ConfigureAwait(false);
 
         ephemeralChildrenWithPrefix.RemoveAll(t =>
-            creationTimeTasksByChildPath.TryGetValue(t.Path, out var creationTimeTask) && creationTimeTask.Result == null);
+            creationTimeTasksByChildPath.TryGetValue(t.Path, out var creationTimeTask) &&
+            creationTimeTask.Result == null);
 
         if (ephemeralChildrenWithPrefix.Count == 0)
-        {
             return [];
-        }
 
-        var oldestChild = ephemeralChildrenWithPrefix.Select((t, index) =>
-                (creationTime: creationTimeTasksByChildPath[t.Path].Result!.Value, index))
-            .OrderBy(t => t.creationTime)
-            .ThenBy(t => t.index)
+        var oldestChild = ephemeralChildrenWithPrefix.Select((tuple, index) =>
+                (creationTime: creationTimeTasksByChildPath[tuple.Path].Result!.Value, index))
+            .OrderBy(tuple => tuple.creationTime)
+            .ThenBy(tuple => tuple.index)
             .First();
-
         return ReorderByLowestIndex(ephemeralChildrenWithPrefix, oldestChild.index);
     }
 
@@ -52,17 +47,17 @@ internal static class ZooKeeperSequentialPath
         IEnumerable<string> childrenNames, string parentNode, string prefix, string? alternatePrefix)
     {
         var result = new List<(string Path, uint UnsignedSequenceNumber, string Prefix)>();
-        foreach (var childName in childrenNames)
+        foreach (var child in childrenNames)
         {
             int? childSequenceNumber;
             string? childPrefix;
-            if (GetSequenceNumberOrDefault(childName, prefix) is { } prefixSequenceNumber)
+            if (GetSequenceNumberOrDefault(child, prefix) is { } prefixSequenceNumber)
             {
                 childSequenceNumber = prefixSequenceNumber;
                 childPrefix = prefix;
             }
             else if (alternatePrefix != null
-                     && GetSequenceNumberOrDefault(childName, alternatePrefix) is { } alternatePrefixSequenceNumber)
+                     && GetSequenceNumberOrDefault(child, alternatePrefix) is { } alternatePrefixSequenceNumber)
             {
                 childSequenceNumber = alternatePrefixSequenceNumber;
                 childPrefix = alternatePrefix;
@@ -75,7 +70,7 @@ internal static class ZooKeeperSequentialPath
 
             if (childPrefix != null)
             {
-                result.Add(($"{parentNode.TrimEnd('/')}/{childName}", unchecked((uint)childSequenceNumber!.Value),
+                result.Add(($"{parentNode.TrimEnd('/')}/{child}", unchecked((uint)childSequenceNumber!.Value),
                     childPrefix));
             }
         }
@@ -83,10 +78,11 @@ internal static class ZooKeeperSequentialPath
         return result;
     }
 
-    private static (uint maxGap, int maxGapEndIndex) FindMaxGap(List<(string Path, uint UnsignedSequenceNumber, string Prefix)> ephemeralChildrenWithPrefix)
+    private static (uint maxGap, int maxGapEndIndex) FindMaxGap(
+        List<(string Path, uint UnsignedSequenceNumber, string Prefix)> ephemeralChildrenWithPrefix)
     {
         uint maxGap = 0;
-        int maxGapEndIndex = -1;
+        var maxGapEndIndex = -1;
         for (var i = 0; i < ephemeralChildrenWithPrefix.Count; ++i)
         {
             var gapEndIndex = (i + 1) % ephemeralChildrenWithPrefix.Count;
@@ -122,18 +118,14 @@ internal static class ZooKeeperSequentialPath
         }
 
         var counterSuffix = pathOrName[(prefixStartIndex + prefix.Length)..];
-        return (
-                   (counterSuffix.Length == 10 && counterSuffix[0] != '+')
-                   || (counterSuffix.Length == 11 && counterSuffix[0] == '-')
-               )
+        return ((counterSuffix.Length == 10 && counterSuffix[0] != '+') ||
+                (counterSuffix.Length == 11 && counterSuffix[0] == '-'))
                && int.TryParse(counterSuffix, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture,
                    out var sequenceNumber)
             ? sequenceNumber
             : default(int?);
     }
 
-    private static async Task<long?> GetNodeCreationTimeAsync(string path, org.apache.zookeeper.ZooKeeper zooKeeper)
-    {
-        return (await zooKeeper.existsAsync(path).ConfigureAwait(false))?.getCtime();
-    }
+    private static async Task<long?> GetNodeCreationTimeAsync(string path, org.apache.zookeeper.ZooKeeper zooKeeper) =>
+        (await zooKeeper.existsAsync(path).ConfigureAwait(false))?.getCtime();
 }
